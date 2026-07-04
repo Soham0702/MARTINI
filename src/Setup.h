@@ -18,6 +18,7 @@
 #ifndef Setup_H
 #define Setup_H
 
+#include <iostream>
 #include "Information.h"
 #include "Pythia8/Pythia.h"
 

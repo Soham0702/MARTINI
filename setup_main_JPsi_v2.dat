@@ -1,0 +1,213 @@
+################################################################
+# Setup file
+################################################################
+# use for both MARTINI and PYTHIA settings
+################################################################
+
+# MARTINI settings
+General:Events = 100000
+
+#
+# basic flags:
+#
+
+General:Evolution = on
+General:prehydroevolution = off
+General:Fragmentation = off
+
+#
+# if evolution is turned on, set these:
+# 
+General:cmEnergy = 5020.
+#General:cmEnergy = 7000.
+#General:cmEnergy = 200.
+General:FragmentationMethod = 1
+General:RadiativeProcesses = on
+General:RadiativeRateSet = 1
+General:ElasticCollisions = on
+General:TransferTransverseMomentum = on
+General:FixedTemperature = off
+#General:FixedTemperature = on
+General:Temperature = 0.22 # if temperature is fixed
+General:FixedEnergy = off
+General:maxTime = 100.
+#General:maxTime = 15.2
+#General:maxTime = 50.
+#General:TimeStep = 0.001
+General:TimeStep = 0.0075
+#General:TimeStep = 0.015
+General:JetPTMin = 0.
+#General:JetPTMin = 1.
+#General:JetPTMin = 4.
+#General:JetPTMin = 100.
+#General:AlphaS = 0.27
+General:AlphaS = 0.3
+General:MoveBeforeTau0 = 2
+#General:FullEvent = 0
+General:FullEvent = 1
+General:TrackPartons = on
+General:FullVacuumShower = on
+General:Ldependence = 0
+#General:Ldependence = 1
+General:pCut = 0.
+#General:pCut = 2.
+General:pCutPropToT = off
+#PDF:LHAPDFset = cteq6m.LHpdf
+#PDF:NuclearEffects = off
+PDF:NuclearEffects = on
+#PDF:nuclearPDF = eps09
+#General:allFromCenter = on
+General:allFromCenter = off
+
+General:quarksEqualGluons = 1
+
+General:TrackHistory = off
+General:InitialXjet = -0.25
+General:InitialYjet = 1.
+General:InitialPXjet = 2.1
+General:InitialPYjet = 0.8
+
+General:PhotonProduction = off
+#General:PhotonProduction = on
+
+#
+# hydro settings
+#
+
+##For evolution_...tau04.dat
+##Schenke
+#Hydro:WhichHydro = 4
+#Hydro:Subset = 1
+#Hydro:taumax = 15.4
+#Hydro:tau0 = 0.4
+#Hydro:Tfinal = 0.12
+##Hydro:dtau = 0.0375
+#Hydro:dtau = 0.075
+#Hydro:dx = .3125
+#Hydro:xmax = 10.
+#Hydro:dz = .25
+#Hydro:zmax = 20.
+
+#Schenke
+Hydro:WhichHydro = 8
+Hydro:Subset = 1
+Hydro:taumax = 20.
+Hydro:tau0 = 0.4
+Hydro:Tfinal = 0.165
+Hydro:dtau = 0.1
+Hydro:dx = 0.2656248
+Hydro:xmax = 17.
+Hydro:dz = .3125
+Hydro:zmax = 10.
+PreHydro:Tau0 = 0.0166666666666667
+PreHydro:Dtau = 0.0166666666666667
+PreHydro:Xmax = 17 
+PreHydro:Dx = 0.0664062 
+
+
+##For evolution_...tau02.dat
+##Schenke
+#Hydro:WhichHydro = 4
+#Hydro:Subset = 1
+#Hydro:taumax = 15.2
+#Hydro:tau0 = 0.2
+#Hydro:Tfinal = 0.12
+#Hydro:dtau = 0.0375
+#Hydro:dx = .3125
+#Hydro:xmax = 10.
+#Hydro:dz = .25
+#Hydro:zmax = 20.
+
+Hydro:fixedDistribution = off
+#Glauber:Target = p
+#Glauber:Projectile = p
+#Glauber:b = 0.
+Glauber:Target = Pb
+Glauber:Projectile = Pb
+#Glauber:b = 2.31
+#Glauber:Target = Au
+#Glauber:Projectile = Au
+##Glauber:b = 0.
+##Glauber:b = 4.47
+Glauber:b = 4.
+Glauber:MaxInterpolationPoints = 100
+Glauber:Envelope = off
+
+HardQCD:all = on
+##SoftQCD:all = on
+Charmonium:all = on
+HadronLevel:Hadronize = off
+#PromptPhoton:all = on
+################################################################
+
+##TimeShower:QEDshowerByQ = off
+##TimeShower:QEDshowerByQ = on
+##PromptPhoton:all = on
+#PhaseSpace:pTHatMin = 0.
+##PhaseSpace:pTHatMin = 1.
+#SigmaProcess:factorMultFac = 4.
+#SigmaProcess:renormMultFac = 8.
+#StringPT:sigma = 0.42
+#StringZ:aLund = 0.15
+#StringZ:bLund = 1.2
+## PYTHIA settings
+
+##SoftQCD:all = on
+#PhaseSpace:pTHatMin = 2.
+#PhaseSpace:pTHatMin = 4.
+#PhaseSpace:pTHatMin = 100.
+#PromptPhoton:all = off
+#SigmaProcess:factorMultFac = 4 #2
+#SigmaProcess:renormMultFac = 8 #2 #0.5
+#StringPT:sigma = 0.42
+#StringZ:aLund = 0.15
+#StringZ:bLund = 1.2
+
+
+#StringPT:sigma = 0.475
+#StringZ:aLund = 0.05
+#StringZ:bLund = 2.
+#SigmaProcess:renormScale2 = 3
+#SigmaProcess:factorScale2 = 3
+
+
+#Timeshower:pTmin = 1.6
+#TimeShower:pTmin = 1.6
+
+#For sampling the same collisions as were sampled in the MUSIC event. -CFY 11/2/2010
+General:Nbin_from_File = 1
+General:Nbin_File_Name NcollList0.dat
+#General:evolution_name _AuAu_0t20_tau04
+#General:evolution_name /raid/dune/CY_MUSIC_AuAu_manycentralities/evolution_AuAu_viscous_b5.dat
+General:evolution_name evolution_xyeta.dat
+General:pre_evolution_name epsilon-u-Hydro-t0.
+
+#For examining heavy quarks:
+General:setInitialPToZero 0
+General:examineHQ 1
+
+PDF:NuclearEffects  = on
+PDF:useLHAPDF       = on
+PDF:LHAPDFset       = EPPS21nlo_CT18Anlo_208
+General:inelasticNNXSec = 67.6
+PDF:LHAPDFmember = 0
+
+#General:totalHQXSec .6
+General:totalHQXSec 70.
+General:charmWidth 0.3
+General:bottomWidth 0.3
+#General:charmWidth 0.3
+#General:bottomWidth 0.3
+General:T_C_HQ 0.165
+General:coal_prob_path rates 
+General:do_coalesence = on
+General:coal_sigma 6.142951168
+General:coal_N_factor 0.2
+General:NColl 1921
+General:IPG_filename coarsed_ufield_tau_0.524_eta_1.dat
+General:HQ_rate_type 4
+General:HQ_Lattice_rate_factor 1.
+General:HQ_scat_rad_flag 0
+General:HQ_rate_path /rates/ 
+General:TwoPiTD_HQ 3.0
+#General:HQ_name /scratch/paul/HQ_momenta

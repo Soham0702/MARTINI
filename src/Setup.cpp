@@ -406,28 +406,54 @@ void Setup::list(bool listAll,  bool listString, string match,
 // Give back current value, with check that key exists.
 
 bool Setup::flag(string keyIn) {
-  if (isFlag(keyIn)) return flags[toLower(keyIn)].valNow; 
-  infoPtr->errorMsg("Error in Setup::flag: unknown key", keyIn);
-  return false; 
+  if (isFlag(keyIn)) return flags[toLower(keyIn)].valNow;
+  cerr << "[MARTINI Setup] Error: unknown key '" << keyIn << "' in Setup::flag" << endl;
+  return false;
 }
 
 int Setup::mode(string keyIn) {
-  if (isMode(keyIn)) return modes[toLower(keyIn)].valNow; 
-  infoPtr->errorMsg("Error in Setup::mode: unknown key", keyIn);
-  return 0; 
+  if (isMode(keyIn)) return modes[toLower(keyIn)].valNow;
+  cerr << "[MARTINI Setup] Error: unknown key '" << keyIn << "' in Setup::mode" << endl;
+  return 0;
 }
 
 double Setup::parm(string keyIn) {
-  if (isParm(keyIn)) return parms[toLower(keyIn)].valNow; 
-  infoPtr->errorMsg("Error in Setup::parm: unknown key", keyIn);
-  return 0.; 
+  if (isParm(keyIn)) return parms[toLower(keyIn)].valNow;
+  cerr << "[MARTINI Setup] Error: unknown key '" << keyIn << "' in Setup::parm" << endl;
+  return 0.;
 }
 
 string Setup::word(string keyIn) {
-  if (isWord(keyIn)) return words[toLower(keyIn)].valNow; 
-  infoPtr->errorMsg("Error in Setup::word: unknown key", keyIn);
-  return " "; 
+  if (isWord(keyIn)) return words[toLower(keyIn)].valNow;
+  cerr << "[MARTINI Setup] Error: unknown key '" << keyIn << "' in Setup::word" << endl;
+  return " ";
 }
+
+
+
+//bool Setup::flag(string keyIn) {
+//  if (isFlag(keyIn)) return flags[toLower(keyIn)].valNow; 
+//  infoPtr->errorMsg("Error in Setup::flag: unknown key", keyIn);
+//  return false; 
+//}
+//
+//int Setup::mode(string keyIn) {
+//  if (isMode(keyIn)) return modes[toLower(keyIn)].valNow; 
+//  infoPtr->errorMsg("Error in Setup::mode: unknown key", keyIn);
+//  return 0; 
+//}
+//
+//double Setup::parm(string keyIn) {
+//  if (isParm(keyIn)) return parms[toLower(keyIn)].valNow; 
+//  infoPtr->errorMsg("Error in Setup::parm: unknown key", keyIn);
+//  return 0.; 
+//}
+//
+//string Setup::word(string keyIn) {
+//  if (isWord(keyIn)) return words[toLower(keyIn)].valNow; 
+//  infoPtr->errorMsg("Error in Setup::word: unknown key", keyIn);
+//  return " "; 
+//}
 
 //*********
  
