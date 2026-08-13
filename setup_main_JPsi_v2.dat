@@ -188,7 +188,7 @@ General:examineHQ 1
 
 PDF:NuclearEffects  = on
 PDF:useLHAPDF       = on
-PDF:LHAPDFset       = EPPS21nlo_CT18Anlo_208
+PDF:LHAPDFset       = EPPS21nlo_CT18Anlo_Pb207
 General:inelasticNNXSec = 67.6
 PDF:LHAPDFmember = 0
 

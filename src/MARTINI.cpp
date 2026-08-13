@@ -11,47 +11,6 @@
 #include "LorentzBooster.cxx"
 #include "MARTINI.h"
 #include <iomanip>
-#include "LHAPDF/LHAPDF.h"
-
-// Average-nucleon nuclear PDF: (Z/A)*f^{p/A} + (N/A)*f^{n/A},
-// with f^{n/A} from f^{p/A} by isospin (u<->d). Reproduces the ensemble
-// average of the old per-event next(n1,n2) p/n sampling, deterministically.
-class NuclearAveragePDF : public Pythia8::PDF {
-public:
-  NuclearAveragePDF(std::string setName, int member, int Zin, int Ain)
-    : Pythia8::PDF(2212), Z(Zin), A(Ain) {
-    lha = LHAPDF::mkPDF(setName, member);
-  }
-  ~NuclearAveragePDF() override { delete lha; }
-private:
-  LHAPDF::PDF* lha;
-  int Z, A;
-  void xfUpdate(int, double x, double Q2) override {
-    double xx = std::max(x,  lha->xMin());
-    double q2 = std::min(std::max(Q2, lha->q2Min()), lha->q2Max());
-    double zf = double(Z)/double(A);   // proton fraction
-    double nf = 1.0 - zf;              // neutron fraction
-    // bound-proton flavors from the EPPS21 grid (returns x*f)
-    double up  = lha->xfxQ2( 2, xx, q2), dp  = lha->xfxQ2( 1, xx, q2);
-    double ubp = lha->xfxQ2(-2, xx, q2), dbp = lha->xfxQ2(-1, xx, q2);
-    // isospin: u_n = d_p, d_n = u_p (same for sea)
-    xu    = zf*up  + nf*dp;
-    xd    = zf*dp  + nf*up;
-    xubar = zf*ubp + nf*dbp;
-    xdbar = zf*dbp + nf*ubp;
-    xs    = lha->xfxQ2( 3, xx, q2);
-    xsbar = lha->xfxQ2(-3, xx, q2);
-    xc    = lha->xfxQ2( 4, xx, q2);
-    xb    = lha->xfxQ2( 5, xx, q2);
-    xg    = lha->xfxQ2(21, xx, q2);
-    xgamma = 0.;
-    xcbar = xc;
-    xbbar = xb;
-  }
-};
-
-
-
 
 // constructor
 MARTINI::MARTINI()
@@ -2533,7 +2492,6 @@ int MARTINI::generateEvent(vector<Parton> *plist)
                 else 
                   n2=2212;
                 pythia.next();
-//                pythia.next(n1,n2);                                                // generate event with pythia
                 done = 0;
                 //pythia.event.list();
                 for (int ip = 0; ip < pythia.event.size(); ++ip) 
@@ -3688,54 +3646,23 @@ bool MARTINI::readString(string line, bool warn)
 
 void MARTINI::initPythia()
 {
-    // In 8.3 the beams/CM energy are set via readString BEFORE init(),
-    // and init() takes no arguments. The old pythia.init(2212,2212,cmEnergy),
-    // setJetpTmin/max, and the *CrossSection() getters were all removed/patched.
     stringstream eCMstr;
     eCMstr << "Beams:eCM = " << cmEnergy;
-    pythia.readString("Beams:idA = 2212");   // beam is a proton; the nuclear +
-    pythia.readString("Beams:idB = 2212");   // isospin content comes from the EPPS21 grid
+    pythia.readString("Beams:idA = 2212");
+    pythia.readString("Beams:idB = 2212");
     pythia.readString(eCMstr.str());
 
     if ( nuclearEffects != 0 )
     {
-        int Zn = glauber->get_Projetile_Z();
-        int An = glauber->get_Projetile_A();
-        auto pdfA = std::make_shared<NuclearAveragePDF>(PDFname, PDFmember, Zn, An);
-        auto pdfB = std::make_shared<NuclearAveragePDF>(PDFname, PDFmember, Zn, An);
-        pythia.setPDFPtr(pdfA, pdfB);
-        cout << "[MARTINI]: nuclear PDF " << PDFname << " member " << PDFmember
-             << ", average nucleon with Z=" << Zn << " A=" << An << endl;
+        stringstream PDFnameStr;
+        PDFnameStr << "PDF:pSet = LHAPDF6:" << PDFname;
+        pythia.readString(PDFnameStr.str());
+        cout << "[MARTINI]: nuclear PDF   " << PDFname  << endl;
     }
 
-    pythia.init();   // MUST be the final PYTHIA configuration call
+    pythia.init();
     cout << endl << "PYTHIA initialized with sqrt(s_NN)=" << cmEnergy << " GeV." << endl;
 }
-
-
-//void MARTINI::initPythia()
-//{
-//    // let PYTHIA know my desired infrared cutoff on the jet momentum for the calculation of the jet cross section
-//    pythia.setJetpTmin(jetpTmin);
-//    pythia.setJetpTmax(jetpTmax);
-//      
-//    // initialize PYTHIA in the CM frame.
-//    pythia.init( 2212, 2212, cmEnergy ); // 2 protons, (if 14000 each 7000 GeV) /2212 is proton
-//    cout << endl << "PYTHIA initialized by MARTINI with sqrt(s)=" << cmEnergy << " GeV." << endl;
-//    
-//    // set the relevant cross sections that PYTHIA was so kind to compute
-//    elasticXSec = pythia.elasticCrossSection();
-//    totalXSec = pythia.totalCrossSection();
-//    jetXSec = pythia.jetCrossSection();
-//    inelasticXSec = totalXSec-elasticXSec;
-//    
-//    // output the cross sections
-//    cout << endl << "[MARTINI::initPythia]:" << endl;
-//    cout << "Jet cross section = " << scientific << setprecision(6) << setw(12) << jetXSec << " mb, with a pTmin = " << jetpTmin << " GeV." << endl;
-//    cout << "Total cross section = " << totalXSec << " mb." << endl;
-//    cout << "Total inelastic cross section = " << inelasticXSec << " mb." << endl;
-//  
-//}
 
 bool MARTINI::init(int path_number)
 {
@@ -4053,37 +3980,6 @@ bool MARTINI::init(int path_number)
         }
         // else: PYTHIA's built-in proton PDF (NNPDF2.3 LO) is used
     }
-
-
-
-//    // set the PDF and possible nuclear effects. note: if nuclear effects are chosen, the use of LHAPDF is enforced!
-//    if ( nuclearEffects!=0 )
-//    {
-//        if (!useLHAPDF)
-//            cout << "[MARTINI]:WARNING: using nuclear effects - turned on LHAPDF against initial settings." << endl;
-//        pythia.readString("PDF:nuclearEffects = 1");
-//        stringstream PDFnameStr;
-//        PDFnameStr << "PDF:pSet=LHAPDF5:" << PDFname << "/" << PDFmember;
-//        pythia.readString(PDFnameStr.str());
-//        stringstream nuclearPDFnameStr;
-//        nuclearPDFnameStr << "PDF:nuclearPDF=" << nuclearPDFname;
-//        pythia.readString(nuclearPDFnameStr.str());
-//        stringstream projAstr, targAstr;
-//        projAstr << "PDF:proj_atomicNumber = " << glauber->get_Projetile_A();
-//        targAstr << "PDF:targ_atomicNumber = " << glauber->get_Target_A();
-//        pythia.readString(projAstr.str());
-//        pythia.readString(targAstr.str());
-//    }
-//    else
-//    {
-//        if(useLHAPDF) 
-//        {
-//            stringstream PDFnameStr;
-//            PDFnameStr << "PDF:pSet=LHAPDF5:" << PDFname << "/" << PDFmember;
-//            pythia.readString(PDFnameStr.str());
-//        }
-//        pythia.readString("PDF:nuclearEffects = 0");
-//    }
   
     if ( fixedTemperature == 0 and fixedEnergy == 0)
         // init PYTHIA with given center of mass energy. will be changed for full AA collision.
@@ -5081,11 +4977,11 @@ int MARTINI::generateEventHeavyQuarks_w_colllist_OR_IPGfile(vector<Parton> *plis
     { 
       if ( random->genrand64_real1() < totalHQXSec/inelasticXSec )
       {
-        if ( random->genrand64_real1() > (double)Projectile_Z/(double)Projectile_A ) n1=2112;
+/*        if ( random->genrand64_real1() > (double)Projectile_Z/(double)Projectile_A ) n1=2112;
         else n1=2212;
         if ( random->genrand64_real1() > (double)Target_Z/(double)Target_A ) n2=2112;
         else n2=2212;
-
+*/
 	int pythiaWorked = 0;
         while(pythiaWorked == 0){
           pythia.next();
