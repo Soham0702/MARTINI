@@ -429,32 +429,6 @@ string Setup::word(string keyIn) {
   return " ";
 }
 
-
-
-//bool Setup::flag(string keyIn) {
-//  if (isFlag(keyIn)) return flags[toLower(keyIn)].valNow; 
-//  infoPtr->errorMsg("Error in Setup::flag: unknown key", keyIn);
-//  return false; 
-//}
-//
-//int Setup::mode(string keyIn) {
-//  if (isMode(keyIn)) return modes[toLower(keyIn)].valNow; 
-//  infoPtr->errorMsg("Error in Setup::mode: unknown key", keyIn);
-//  return 0; 
-//}
-//
-//double Setup::parm(string keyIn) {
-//  if (isParm(keyIn)) return parms[toLower(keyIn)].valNow; 
-//  infoPtr->errorMsg("Error in Setup::parm: unknown key", keyIn);
-//  return 0.; 
-//}
-//
-//string Setup::word(string keyIn) {
-//  if (isWord(keyIn)) return words[toLower(keyIn)].valNow; 
-//  infoPtr->errorMsg("Error in Setup::word: unknown key", keyIn);
-//  return " "; 
-//}
-
 //*********
  
 // Change current value, respecting limits.

@@ -3651,11 +3651,13 @@ void MARTINI::initPythia()
     pythia.readString("Beams:idA = 2212");
     pythia.readString("Beams:idB = 2212");
     pythia.readString(eCMstr.str());
+    pythia.readString("4:m0 = 1.27"); 
 
     if ( nuclearEffects != 0 )
     {
+        pythia.readString("PDF:useHard = on");
         stringstream PDFnameStr;
-        PDFnameStr << "PDF:pSet = LHAPDF6:" << PDFname;
+        PDFnameStr << "PDF:pHardSet = LHAPDF6:" << PDFname;
         pythia.readString(PDFnameStr.str());
         cout << "[MARTINI]: nuclear PDF   " << PDFname  << endl;
     }
@@ -3966,9 +3968,7 @@ bool MARTINI::init(int path_number)
 
     if ( nuclearEffects != 0 )
     {
- //       stringstream PDFnameStr;
-//        PDFnameStr << "PDF:pSet = LHAPDF6:" << PDFname;   // e.g. EPPS21nlo_CT18Anlo_208
-//        pythia.readString(PDFnameStr.str());
+//          do nothing the pdf set is already printed for pbpb from initpythia       
     }
     else
     {
@@ -4982,9 +4982,10 @@ int MARTINI::generateEventHeavyQuarks_w_colllist_OR_IPGfile(vector<Parton> *plis
         if ( random->genrand64_real1() > (double)Target_Z/(double)Target_A ) n2=2112;
         else n2=2212;
 */
-	int pythiaWorked = 0;
+
+        int pythiaWorked = 0;
         while(pythiaWorked == 0){
-          pythia.next();
+          pythiaWorked = pythia.next();
 //          pythiaWorked = pythia.next(n1,n2);
         }                                                // generate event with pythia
 
@@ -5754,72 +5755,88 @@ int MARTINI::evolveHeavyQuarks(vector<Parton>  **plist, int counter, int it)
       } else if (HQ_rate_type == 3)
       {
         double temp_2piTD;
-	if (tau < hydroTau0)
-	{
-//          temp_2piTD = 20.30405*T + 0.35256;
-          temp_2piTD = (10.87937*T - 0.79860)*HQ_Lattice_rate_factor;
-	} else
-	{
-          temp_2piTD = (10.87937*T - 0.79860)*HQ_Lattice_rate_factor;
-	}
-      	kappa_T = 4.*M_PI*T*T*T/temp_2piTD;
-      	//kappa_T = 4.*4.*M_PI*T*T*T/temp_2piTD;
-        eta = 2.*M_PI*T*T/(temp_2piTD*M);
-        kappa_L = kappa_T;
+        if (tau < hydroTau0)
+        {
+    //          temp_2piTD = 20.30405*T + 0.35256;
+              temp_2piTD = (10.87937*T - 0.79860)*HQ_Lattice_rate_factor;
+        } else
+        {
+              temp_2piTD = (10.87937*T - 0.79860)*HQ_Lattice_rate_factor;
+        }
+            kappa_T = 4.*M_PI*T*T*T/temp_2piTD;
+            //kappa_T = 4.*4.*M_PI*T*T*T/temp_2piTD;
+            eta = 2.*M_PI*T*T/(temp_2piTD*M);
+            kappa_L = kappa_T;
 
       } else if (HQ_rate_type == 4)
       {
         double temp_2piTD;
-	if (tau < hydroTau0)
-	{
-//          temp_2piTD = 20.30405*T + 0.35256;
-          temp_2piTD = (10.87937*T - 0.79860);
-	} else
-	{
-          temp_2piTD = 10.87937*T - 0.79860;
-	}
-      	kappa_T = 4.*M_PI*T*T*T/temp_2piTD;
+        if (tau < hydroTau0)
+        {
+    //          temp_2piTD = 20.30405*T + 0.35256;
+              temp_2piTD = (10.87937*T - 0.79860);
+        } else
+        {
+              temp_2piTD = 10.87937*T - 0.79860;
+        }
+        kappa_T = 4.*M_PI*T*T*T/temp_2piTD;
         eta = 2.*M_PI*T*T/(temp_2piTD*M);
-	eta     *= 1./(1.+0.17*pow(pHQ,1.11));//pHQ in GeV
-	kappa_T *= (1.+ 5.*pow(pHQ,1.11)/(7.9+pow(pHQ,1.11)));//pHQ in GeV
+        eta     *= 1./(1.+0.17*pow(pHQ,1.11));//pHQ in GeV
+        kappa_T *= (1.+ 5.*pow(pHQ,1.11)/(7.9+pow(pHQ,1.11)));//pHQ in GeV
         kappa_L = kappa_T;
 
       } else if (HQ_rate_type == 5)
       {
         double temp_2piTD;
-	if (tau < hydroTau0)
-	{
-          temp_2piTD = (6.07614*T - 0.19409);
-	} else
-	{
-          temp_2piTD = 6.07614*T - 0.19409;
-	}
-      	kappa_T = 4.*M_PI*T*T*T/temp_2piTD;
-        eta = 2.*M_PI*T*T/(temp_2piTD*M);
-	eta     *= 1./(1.+0.17*pow(pHQ,1.11));//pHQ in GeV
-	kappa_T *= (1.+ 5.*pow(pHQ,1.11)/(7.9+pow(pHQ,1.11)));//pHQ in GeV
-        kappa_L = kappa_T;
+        if (tau < hydroTau0)
+        {
+              temp_2piTD = (6.07614*T - 0.19409);
+        } else
+        {
+              temp_2piTD = 6.07614*T - 0.19409;
+        }
+            kappa_T = 4.*M_PI*T*T*T/temp_2piTD;
+            eta = 2.*M_PI*T*T/(temp_2piTD*M);
+        eta     *= 1./(1.+0.17*pow(pHQ,1.11));//pHQ in GeV
+        kappa_T *= (1.+ 5.*pow(pHQ,1.11)/(7.9+pow(pHQ,1.11)));//pHQ in GeV
+            kappa_L = kappa_T;
 
       } else if (HQ_rate_type == 6)
       {
+            double temp_2piTD;
+        if (tau < hydroTau0)
+        {
+              temp_2piTD = (15.682606*T - 1.40311);
+        } else
+        {
+              temp_2piTD = 15.682606*T - 1.40311;
+        }
+            kappa_T = 4.*M_PI*T*T*T/temp_2piTD;
+            eta = 2.*M_PI*T*T/(temp_2piTD*M);
+        eta     *= 1./(1.+0.17*pow(pHQ,1.11));//pHQ in GeV
+        kappa_T *= (1.+ 5.*pow(pHQ,1.11)/(7.9+pow(pHQ,1.11)));//pHQ in GeV
+            kappa_L = kappa_T;
+
+      }
+      else if(HQ_rate_type == 7)    //Soham's add
+      {
         double temp_2piTD;
-	if (tau < hydroTau0)
-	{
-          temp_2piTD = (15.682606*T - 1.40311);
-	} else
-	{
-          temp_2piTD = 15.682606*T - 1.40311;
-	}
-      	kappa_T = 4.*M_PI*T*T*T/temp_2piTD;
-        eta = 2.*M_PI*T*T/(temp_2piTD*M);
-	eta     *= 1./(1.+0.17*pow(pHQ,1.11));//pHQ in GeV
-	kappa_T *= (1.+ 5.*pow(pHQ,1.11)/(7.9+pow(pHQ,1.11)));//pHQ in GeV
+        temp_2piTD = (10.87937*T - 0.79860);
+        kappa_T = 4.*M_PI*T*T*T/temp_2piTD;
+        kappa_T *= (1.+ 5.*pow(pHQ,1.11)/(7.9+pow(pHQ,1.11)));//pHQ in GeV
+        eta  = kappa_T/(2.*sqrt( (M*M) + (pHQ*pHQ) )*T);
+        if(pHQ > 1e-6 )
+        {
+            double kappa_prime  =(4.*M_PI*T*T*T/temp_2piTD)* ( (43.845*pow(pHQ,0.11)) /((7.9+pow(pHQ,1.11))*(7.9+pow(pHQ,1.11))));
+            eta -= kappa_prime/(2.*pHQ); 
+        }
         kappa_L = kappa_T;
 
-      } else
+      }    
+      else
       {
       	cout << "Invalid HQ_rate_type" << endl;
-	exit(1);
+        exit(1);
       }
 
       double kicks[3];

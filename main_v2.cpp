@@ -1,6 +1,6 @@
 #include "MARTINI.h"
 #include <sstream>
-#define numJets 50000
+#define numJets 100
 #define nybins 200
 #define DNDY2_MAX 10.
 #define DNDY_MAX 10.
@@ -26,7 +26,9 @@ int main(int argc, char* argv[])
   MARTINI martini;
   Event fullEvent;
 
-  martini.readFile("setup_main_JPsi_v2.dat");
+  string setupFile = (argc > 1) ? argv[1] : "setup_main_JPsi_v2.dat";
+
+  martini.readFile(setupFile);
   if (argc > 1)
   {
     int job_num = stoi(argv[1]);

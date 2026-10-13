@@ -54,7 +54,6 @@ General:pCut = 0.
 General:pCutPropToT = off
 #PDF:LHAPDFset = cteq6m.LHpdf
 #PDF:NuclearEffects = off
-PDF:NuclearEffects = on
 #PDF:nuclearPDF = eps09
 #General:allFromCenter = on
 General:allFromCenter = off
@@ -133,7 +132,7 @@ Glauber:b = 4.
 Glauber:MaxInterpolationPoints = 100
 Glauber:Envelope = off
 
-HardQCD:all = on
+HardQCD:all = off
 ##SoftQCD:all = on
 Charmonium:all = on
 HadronLevel:Hadronize = off
@@ -188,12 +187,13 @@ General:examineHQ 1
 
 PDF:NuclearEffects  = on
 PDF:useLHAPDF       = on
-PDF:LHAPDFset       = EPPS21nlo_CT18Anlo_Pb207
-General:inelasticNNXSec = 67.6
+PDF:LHAPDFset       = EPPS21nlo_CT18Anlo_Pb208
+General:inelasticNNXSec = 70.0
 PDF:LHAPDFmember = 0
 
 #General:totalHQXSec .6
-General:totalHQXSec 70.
+#General:totalHQXSec 70.
+General:totalHQXSec 0.55
 General:charmWidth 0.3
 General:bottomWidth 0.3
 #General:charmWidth 0.3
@@ -203,7 +203,7 @@ General:coal_prob_path rates
 General:do_coalesence = on
 General:coal_sigma 6.142951168
 General:coal_N_factor 0.2
-General:NColl 1921
+General:NColl 0
 General:IPG_filename coarsed_ufield_tau_0.524_eta_1.dat
 General:HQ_rate_type 4
 General:HQ_Lattice_rate_factor 1.
